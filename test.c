@@ -1,29 +1,36 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
 
-int main() {
-    char accNum[20];          // To store account number input
-    char filename[64];        // To store the full filename
+bool onlyAplhabets(const char *str){
+    int i = 0;
 
-    // Ask user for account number
-    printf("Enter account number: ");
-    if (fgets(accNum, sizeof(accNum), stdin) != NULL) {
-        // Remove the newline character if present
-        size_t len = strlen(accNum);
-        if (len > 0 && accNum[len - 1] == '\n') {
-            accNum[len - 1] = '\0';
+    while((str[i] != '\0' && str[i] != '\n')){
+        if(str[i] == '-'){
+            i++;
+            continue;
         }
+
+        //Check if it's not alphabet
+        if (!isalpha(str[i])){
+            return false;
+        }
+
+        i++;
     }
 
-    // Construct the full file path
-    snprintf(filename, sizeof(filename), "database/%s.txt", accNum);
+    //Return true if everything is alphabet and contains "-"
+    return true;
+}
 
-    // Delete the file
-    if (remove(filename) == 0) {
-        printf("File '%s' deleted successfully.\n", filename);
+int main(){
+    char str[256] = "Anja-23";
+    if(onlyAplhabets(str)){
+        printf("It's accepted!");
     } else {
-        perror("Error deleting file");
+        printf("Rejected");
     }
-
+ 
     return 0;
 }
