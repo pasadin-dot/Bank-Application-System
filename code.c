@@ -14,10 +14,10 @@ float global_amount;
 
 struct variables {
     //Details - Create New Bank Acc
-    char name[30];
-    char id[12];
-    char acc_type[20];
-    char pin[5];
+    char name[255];
+    char id[255];
+    char acc_type[255];
+    char pin[255];
 
     //File Management
     char filename[7];
@@ -134,6 +134,12 @@ void create_new_bank_acc(){
         fgets(variable.name, sizeof(variable.name), stdin);
         variable.name[strcspn(variable.name, "\n")] = '\0';
 
+        int size_name = strlen(variable.name);
+        if (size_name > 30){
+            printf("EXCEEDED AMOUNT. ONLY 30 CHARACTERS IS ACCEPTED.\n");
+            continue;
+        }
+
         if (onlyAplhabets(variable.name)) {
             break;
         } else {
@@ -147,6 +153,12 @@ void create_new_bank_acc(){
         fgets(variable.id, sizeof(variable.id), stdin);
         variable.id[strcspn(variable.id, "\n")] = '\0';
 
+        int size_id = strlen(variable.id);
+        if (size_id > 12){
+            printf("EXCEEDED AMOUNT. ONLY 12 NUMBERS ARE ACCEPTED.\n");
+            continue;
+        }
+
         if(onlyDigits(variable.id)){
             break;
         } else {
@@ -158,18 +170,27 @@ void create_new_bank_acc(){
         printf("Type of Account(1-Savings OR 2-Current): ");
         fgets(variable.acc_type, sizeof(variable.acc_type), stdin);
         variable.acc_type[strcspn(variable.acc_type, "\n")] = '\0';
+        
+        int size_accType = strlen(variable.acc_type);
+        if (size_accType > 8){
+            printf("EXCEEDED AMOUNT. TRY AGAIN.\n");
+            continue;
+        }
 
         if(onlyAplhabets(variable.acc_type)){
             strcpy(loweredAccType,variable.acc_type);
             toLowerCase(loweredAccType);
-            if (loweredAccType == "savings" || loweredAccType == "current"){
+            if (strcmp(loweredAccType,"savings") == 0 || strcmp(loweredAccType,"current") == 0){
                 break;
+            } else {
+                printf("INVALID FORMAT\n");
+                continue;
             }
         } else {
-            if (strcmp(variable.acc_type,"1")){
+            if (strcmp(variable.acc_type,"1") == 0){
                 strcpy(variable.acc_type,"Savings");
                 break;
-            } else if(strcmp(variable.acc_type,"2")){
+            } else if(strcmp(variable.acc_type,"2") == 0){
                 strcpy(variable.acc_type,"Current");
                 break;
             } else {
@@ -180,22 +201,22 @@ void create_new_bank_acc(){
     }
     
 
-    while(numPin < 4){
-        printf("4-digit Pin: ");
+    while(true){
+        printf("4 Digit Pin: ");
         fgets(variable.pin, sizeof(variable.pin), stdin);
         variable.pin[strcspn(variable.pin, "\n")] = '\0';
 
-        if(!onlyDigits){
-            printf("INVALID FORMAT. ONLY NUMBERS ARE ACCEPTED");
-            continue;
-        }
-
         numPin = strlen(variable.pin);
-        if (numPin < 4) {
-            printf("4 Digit Pin is required. Please retype.\n\n");
+        if (numPin != 4) {
+            printf("4 DIGIT PIN IS REQUIRED\n");
             continue;
         } else {
-            break;
+            if(!onlyDigits(variable.pin)){
+                printf("INVALID FORMAT. ONLY NUMBERS ARE ACCEPTED");
+                continue;
+            } else {
+                break;
+            }
         }
     }
     
@@ -297,8 +318,22 @@ void delete_bank_acc(){
     while(true){
         printf("\nBank Account Number: ");
         if (!fgets(accNum, sizeof(accNum), stdin)) continue;
-        accNum[strcspn(accNum, "\n")] = '\0'; 
+        accNum[strcspn(accNum, "\n")] = '\0';
+        
+        int sizeAccNum = strlen(accNum);
+        if (sizeAccNum > 6){
+            printf("EXCEEDED AMOUNT. ONLY 6 NUMBERS ARE ACCEPTED.\n");
+            continue;
+        }
 
+        if(onlyDigits(accNum)){
+            break;
+        } else {
+            printf("INVALID FORMAT. ONLY NUMBERS ARE ACCEPTED.\n");
+        }
+    }
+
+    while(true){
         printf("Last 4-digit of ID Number: ");
         if (!fgets(last4Digits, sizeof(last4Digits), stdin)) continue;
         last4Digits[strcspn(last4Digits, "\n")] = '\0';
@@ -308,7 +343,6 @@ void delete_bank_acc(){
         pin[strcspn(pin, "\n")] = '\0';
 
         snprintf(filename, sizeof(filename), "database/%s.txt", accNum);
-        printf("%s\n",filename);
 
         //Validate id last 4 digit and pin 
         if(check_last4Digits(filename,last4Digits) && check_pin(filename,pin)) {
@@ -316,11 +350,8 @@ void delete_bank_acc(){
                 printf("ACCOUNT DELETED\n\n");
                 break;
             } else {
-                printf("COULDN'T DELETE\n\n");
+                printf("FAILED TO DELETE\n\n");
             }
-        } else {
-            printf("WRONG INFO\n");
-            continue;
         }
     }
 }
@@ -352,7 +383,6 @@ bool check_digitNumber(char amount[]){
             hasDecimal = true;
             int dotNum = i + 1;
             digitNumber = len - dotNum;
-            printf("%d\n",digitNumber);
             break;
         }
     }
