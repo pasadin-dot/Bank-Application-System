@@ -11,116 +11,117 @@ void start_menu();
 void create_txt_file(char name[], char id[], char acc_type[], char pin[]);
 
 float global_amount;
+char backKeyWord[5] = "back";
 
 struct variables {
     //Details - Create New Bank Acc
     char name[256];
-    char id[256];
-    char acc_type[256];
-    char pin[256];
+    char id[14];
+    char acc_type[8];
+    char pin[6];
 
     //File Management
-    char filename[7];
+    char filename[30];
+
+    //Delete, Deposit, Withdraw
+    char accNum[8];
+    char last4Digit[6];
 };
 
 void printError(int errorID) {
-    switch(errorID) {
-        // ===== CREATE =====
+    printf("-----------------------------------------------------\n");
+
+    switch (errorID) {
+        // FILE / SYSTEM ERRORS
         case 101:
-            printf("Error: Unable to open file\n");
+            printf("Error: Unable to open file\n\n");
             break;
         case 102:
-            printf("Error: Name exceeds 255 characters. Please enter a valid name\n");
+            printf("Error: Unable to access directory\n\n");
             break;
         case 103:
-            printf("Error: Invalid name format. Only alphabets and '-' are allowed\n");
-            break;
-        case 104:
-            printf("Error: ID number exceeds 12 characters. Please enter a valid ID\n");
-            break;
-        case 105:
-            printf("Error: Invalid ID number format. Only numeric characters are allowed\n");
-            break;
-        case 106:
-            printf("Error: Account type input exceeds maximum allowed length\n");
-            break;
-        case 107:
-            printf("Error: Invalid account type format\n");
-            break;
-        case 108:
-            printf("Error: PIN must be exactly 4 digits\n");
-            break;
-        case 109:
-            printf("Error: Invalid PIN format. Only numeric characters are allowed\n");
-            break;
-        case 110:
-            printf("Error: ID number below 5 characters. Please enter a valid ID\n");
-            break;
-
-        // ===== DELETE =====
-        case 201:
-            printf("Error: Unable to access directory\n");
-            break;
-        case 202:
-            printf("Error: Account number must be 6 digits. Please enter a valid account number\n");
-            break;
-        case 203:
-            printf("Error: Invalid account number format. Only numeric characters are allowed\n");
-            break;
-        case 204:
-            printf("Error: Incorrect last 4 digit of id number. Please try again\n");
-            break;
-        case 205:
-            printf("Error: Incorrect pin. Please try again\n");
-            break;
-        case 206:
-            printf("Error: Unable to remove account\n");
+            printf("Error: Unable to remove account. Please try again\n");
             printf("Leaving action...\n\n");
             break;
-        case 207:
-            printf("Error: No matching bank account was found. Please enter a valid account number\n");
+        case 104:
+            printf("Error: Invalid input. Account not found\n\n");
             break;
 
-        // ===== DEPOSIT & WITHDRAW =====
+        // INPUT LENGTH ERRORS
+        case 201:
+            printf("Error: Input exceeds 255 characters.");
+            break;
+        case 202:
+            printf("Error: ID number requires 12 numbers. Please enter a valid ID\n\n");
+            break;
+        case 203:
+            printf("Error: Account type input exceeds maximum allowed length.Please enter 'Savings', 'Current', or the corresponding number.\n\n");
+            break;
+        case 204:
+            printf("Error: ID number below 5 characters. Please enter a valid ID\n\n");
+            break;
+        case 205:
+            printf("Error: Account number must be 6 digits. Please enter a valid account number\n\n");
+            break;
+        case 206:
+            printf("Error: Only 4 digits are allowed\n\n");
+            break;
+
+        // INPUT FORMAT ERRORS
         case 301:
-            printf("Error: Account not found. Please try again\n");
+            printf("Error: Invalid name format. Only alphabets, dash(-), dot(.) and slash(/) are allowed\n\n");
             break;
         case 302:
-            printf("Error: Amount exceeds allowed range. Only RM 0 - RM 50,000 per operation\n");
+            printf("Error: Invalid ID number format. Only numeric characters are allowed\n\n");
             break;
         case 303:
-            printf("Error: Incorrect PIN. Please try again\n");
+            printf("Error: Invalid account type format. Please enter 'Savings', 'Current', or the corresponding number.\n\n");
             break;
         case 304:
-            printf("Error: Invalid format. Only XXXXX.XX is accepted\n");
+            printf("Error: Invalid PIN format. Only numeric characters are allowed\n\n");
             break;
         case 305:
-            printf("Error: Insufficient funds. The withdraw amount exceeds you available balance\n");
+            printf("Error: Invalid account number format. Only numeric characters are allowed\n\n");
+            break;
+        case 306:
+            printf("Error: Invalid format. Only float numbers in XXXXX.XX format is accepted\n\n");
+            break;
+        case 307:
+            printf("Error: Invalid selection. Please enter a number between 1 and 6\n\n");
+            break;
+        case 308:
+            printf("Error: Invalid input. Please select a valid option (accept[1]/reject[0])\n\n");
             break;
 
-        // ===== REMITTANCE =====
+        // AUTH / VERIFICATION ERRORS
         case 401:
-            printf("Error: Invalid input. Account file not found\n");
+            printf("Error: Incorrect last 4 digit of id number. Please try again\n\n");
             break;
         case 402:
-            printf("Error: Invalid PIN\n");
-            break;
-        case 403:
-            printf("Error: Insufficient funds. The remittance amount exceeds your available balance\n");
-            break;
-        case 404:
-            printf("Error: Invalid amount format. Only XXXXX.XX is accepted\n");
-            break;
-        case 405:
-            printf("Error: Invalid input. Please select a valid option (accept[1]/reject[0])\n");
-            break;
-        case 406:
-            printf("Transaction rejected. Please re-enter\n\n");
+            printf("Error: Incorrect PIN. Please try again\n\n");
             break;
 
-        // ===== START MENU =====
+        // TRANSACTION LOGIC ERRORS
         case 501:
-            printf("Error: Invalid selection. Please enter a number between 1 and 6\n");
+            printf("Error: No matching bank account was found. Please enter a valid account number\n\n");
+            break;
+        case 502:
+            printf("Error: Amount exceeds allowed range. Only RM 0 - RM 50,000 per operation\n\n");
+            break;
+        case 503:
+            printf("Error: Insufficient funds. The withdraw amount exceeds you available balance\n\n");
+            break;
+        case 504:
+            printf("Error: Insufficient funds. The remittance amount exceeds your available balance\n\n");
+            break;
+        case 505:
+            printf("Transaction rejected. Please re-enter\n\n");
+            break;
+        case 506:
+            printf("Error: Sender's bank account number cannot be the same as the receiver's account number.\n\n");
+            break;
+        case 507:
+            printf("Error: Amount number must be positive\n\n");
             break;
 
         default:
@@ -128,8 +129,33 @@ void printError(int errorID) {
     }
 }
 
+void printHeader(int headerID){
+    printf("\n---------------");
+    switch(headerID){
+        case 11:
+            printf("CREATE NEW BANK ACCOUNT");
+            break;
+        case 12:
+            printf("CHECK ACCOUNT");
+            break;
+        case 13:
+            printf("DELETE BANK ACCOUNT");
+            break;
+        case 14:
+            printf("DEPOSIT MONEY");
+            break;
+        case 15: 
+            printf("WITHDRAW MONEY");
+            break;
+        case 16:
+            printf("REMITTANCE");
+            break;
+    }
+    printf("---------------\n");
+}
+
 void start_menu(){
-    printf("========================================\n");
+    printf("\n========================================\n");
     printf("BANKING SYSTEM APPLICATION\n");
     printf("========================================\n");
     char *actions[] = {
@@ -179,15 +205,15 @@ void create_txt_file(char name[], char id[], char acc_type[], char pin[]){
     fclose(fp);
 }
 
-bool onlyAplhabets(const char *str){
+bool checkNameFormat(const char *str){
     //Reject empty string
     if (*str == '\0'){
         return false;
     }
 
     while((*str != '\0' && *str != '\n')){
-        //Accepts "-" in name
-        if(*str == '-'){
+        //Accepts dash(-), dot(.) and slash(/) in name
+        if(*str == '-' || *str == '.' || *str == '/'){
             str++;
             continue;
         }
@@ -200,7 +226,7 @@ bool onlyAplhabets(const char *str){
         str++;
     }
 
-    //Return true if everything is alphabet and contains "-"
+    //Return true if everything is alphabet and contains special char stated
     return true;
 }
 
@@ -228,110 +254,159 @@ void toLowerCase(char *str){
     }
 }
 
+bool check_input(char *input, int size){
+    if (fgets(input, size, stdin) != NULL){
+        if (strchr(input, '\n') == NULL) {
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF); // flush
+            return false;
+        } else {
+            input[strcspn(input, "\n")] = '\0';
+            return true;
+        }
+    }
+}
+
+bool onlyAlphabets(const char *str){
+    //Reject empty string
+    if (*str == '\0'){
+        return false;
+    }
+
+    while((*str != '\0')){
+        //Check if it's not alphabet
+        if (!isalpha((unsigned char)*str)){
+            return false;
+        }
+
+        str++;
+    }
+
+    //Return true if everything is alphabet
+    return true;
+}
+
 void create_new_bank_acc(){
     struct variables variable;
-    int numPin = 0;
     char loweredAccType[20];
-    printf("\n--------CREATE NEW BANK ACCOUNT---------\n");
+
+    int step = 1;
+
+    bool valid = false;
+    printHeader(11); //---------CREATE NEW BANK ACCOUNT------
     printf("Please insert your personal details below\n");
 
-    while (true){
-        printf("Name: ");
-        fgets(variable.name, sizeof(variable.name), stdin);
-        variable.name[strcspn(variable.name, "\n")] = '\0';
-
-        int size_name = strlen(variable.name);
-        if (size_name > 255){
-            printError(102); //Name exceeds 255 characters
-            continue;
-        }
-
-        if (onlyAplhabets(variable.name)) {
-            break;
-        } else {
-            printError(103); //Invalid name format
-            continue;
-        }
-    }
-
-    while (true){
-        printf("Identification Number: ");
-        fgets(variable.id, sizeof(variable.id), stdin);
-        variable.id[strcspn(variable.id, "\n")] = '\0';
-
-        int size_id = strlen(variable.id);
-        if (size_id > 12){
-            printError(104); //ID number exceeds 12 characters
-            continue;
-        } else if (size_id < 5) {
-            printError(110); //ID number below 5 characters
-            continue;
-        }
-
-        if(onlyDigits(variable.id)){
-            break;
-        } else {
-            printError(105); //Invalid ID format
-            continue;
-        }
-    }
-    
     while(true){
-        printf("Type of Account(Savings[1] OR Current[2]): ");
-        fgets(variable.acc_type, sizeof(variable.acc_type), stdin);
-        variable.acc_type[strcspn(variable.acc_type, "\n")] = '\0';
-        
-        int size_accType = strlen(variable.acc_type);
-        if (size_accType > 8){
-            printError(106); //Account type input exceed maximum allowed length
-            continue;
-        }
-
-        if(onlyAplhabets(variable.acc_type)){
-            strcpy(loweredAccType,variable.acc_type);
-            toLowerCase(loweredAccType);
-            if (strcmp(loweredAccType,"savings") == 0 || strcmp(loweredAccType,"current") == 0){
-                break;
-            } else {
-                printError(107); //Invalid account type format
+        if (step == 1){
+            printf("Name: ");
+            if(!check_input(variable.name, sizeof(variable.name))){ //Prevent users to enter massive amount of input
+                printError(201); //Input exceeds 255 characters
                 continue;
+            }
+
+            if (strcmp(variable.name,backKeyWord)==0){
+                return;
+            } else {
+                if (checkNameFormat(variable.name)) {
+                    step++;
+                    continue;
+                } else {
+                    printError(301); //Invalid name format
+                    continue;
+                }
+            }
+        } else if (step == 2){
+            printf("Identification Number: ");
+            if(!check_input(variable.id, sizeof(variable.id))){ //Prevent users to enter massive amount of input
+                printError(202); //ID number != 12
+                continue;
+            }
+
+            if (strlen(variable.id) != 12){
+                printError(202); //ID number != 12
+                continue;
+            }
+
+
+            if (strcmp(variable.id,backKeyWord) == 0){
+                step--;
+                continue;
+            } else {
+                if(onlyDigits(variable.id)){
+                    step++;
+                    continue;
+                } else {
+                    printError(302); //Invalid ID format
+                    continue;
+                }
+            }
+        } else if (step == 3){
+            printf("Type of Account(Savings[1] OR Current[2]): ");
+            if(!check_input(variable.acc_type,sizeof(variable.acc_type))){ //Prevent users to enter massive amount of input
+                printError(203); //Input exceeds 8 characters
+                continue;
+            }
+            
+            if (strcmp(variable.acc_type,backKeyWord)==0){
+                step--;
+                continue;
+            } else {
+                if(onlyAlphabets(variable.acc_type)){
+                    strcpy(loweredAccType,variable.acc_type);
+                    toLowerCase(loweredAccType);
+                    if (strcmp(loweredAccType,"savings") == 0 || strcmp(loweredAccType,"current") == 0){
+                        valid = true;
+                    }
+                } else if(onlyDigits(variable.acc_type)){
+                    if(strcmp(variable.acc_type,"1")==0){
+                        strcpy(variable.acc_type,"Savings");
+                        valid = true;
+                    } else if (strcmp(variable.acc_type,"2")==0){
+                        strcpy(variable.acc_type,"Current");
+                        valid = true;
+                    }
+                }
+
+                if (valid){
+                    step++;
+                } else {
+                    printError(303);
+                }
+
+                continue;
+            }
+        } else if (step == 4){
+            printf("4 Digit Pin: ");
+            if(!check_input(variable.pin, sizeof(variable.pin))){ //Prevent users to enter massive amount of input
+                printError(206); //Input exceeds 4 characters
+                continue;
+            } 
+
+            if(strlen(variable.pin) != 4){
+                printError(206); //Input exceeds 4 characters
+                continue;
+            }
+
+            if (strcmp(variable.pin,backKeyWord)==0){
+                step--;
+                continue;
+            } else {
+                if(!onlyDigits(variable.pin)){
+                    printError(304); //Invalid pin format
+                    continue;
+                } else {
+                    break; //Credentials valid. Exit loop
+                }
             }
         } else {
-            if (strcmp(variable.acc_type,"1") == 0){
-                strcpy(variable.acc_type,"Savings");
-                break;
-            } else if(strcmp(variable.acc_type,"2") == 0){
-                strcpy(variable.acc_type,"Current");
-                break;
-            } else {
-                printError(107); //Invalid account type format
-                continue;
-            }
+            printf("System crashed. Restarting the program...\n");
+            return; //Force exit void function
         }
-    }
-    
-    while(true){
-        printf("4 Digit Pin: ");
-        fgets(variable.pin, sizeof(variable.pin), stdin);
-        variable.pin[strcspn(variable.pin, "\n")] = '\0';
-
-        numPin = strlen(variable.pin);
-        if (numPin != 4) {
-            printError(108); //Exceed 4 digit
-            continue;
-        } else {
-            if(!onlyDigits(variable.pin)){
-                printError(109); //Invalid pin format
-                continue;
-            } else {
-                break;
-            }
-        }
-    }
+    }  
     
     create_txt_file(variable.name,variable.id,variable.acc_type,variable.pin);
 
-    printf("\n----------BANK ACCOUNT CREATED----------\n\n");
+    printf("\n----------BANK ACCOUNT CREATED----------\n");
 }
 
 bool check_accNum(char filename[]){
@@ -416,17 +491,15 @@ void delete_bank_acc(){
     DIR *d;
     struct dirent *dir;
     struct variables variable;
-    char accNum[256];
-    char pin[256];
-    char last4Digits[256];
-    char filename[30];
 
     bool last4Correct = false;
     bool pinCorrect = false;
-    printf("\n----------DELETE BANK ACCOUNT-----------\n");
+
+    int step = 1;
+    printHeader(13);  //---------DELETE BANK ACCOUNT------
     d = opendir("database"); 
     if (d == NULL) {
-        printError(201); //Unable to access directory
+        printError(102); //Unable to access directory
     }
 
     //List current bank accounts
@@ -441,66 +514,100 @@ void delete_bank_acc(){
     printf("\n");
 
     while(true){
-        printf("Bank Account Number: ");
-        if (!fgets(accNum, sizeof(accNum), stdin)) continue;
-        accNum[strcspn(accNum, "\n")] = '\0';
-        
-        int sizeAccNum = strlen(accNum);
-        if (sizeAccNum != 6){
-            printError(202); //Acc num not 6 digit number
-            continue;
-        }
-
-        if(onlyDigits(accNum)){
-            sprintf(filename, "database/%s.txt", accNum);
-
-            if (check_accNum(filename)){
-                break;
-            } else {
-                printError(207); //No matching bank account number
+        if(step == 1){
+            printf("Bank Account Number: ");
+            if(!check_input(variable.accNum,sizeof(variable.accNum))){ //Prevent users to enter massive amount of input
+                printError(205); //Input exceeds 6 characters
                 continue;
             }
+
+            if (strlen(variable.accNum) != 6){
+                printError(205); //Acc num must be 6 digit number
+                continue;
+            }
+            
+            if(strcmp(variable.accNum,backKeyWord)==0){
+                return;
+            } else {
+                if(onlyDigits(variable.accNum)){
+                    sprintf(variable.filename, "database/%s.txt", variable.accNum);
+
+                    if (check_accNum(variable.filename)){
+                        step++;
+                        continue;
+                    } else {
+                        printError(501); //No matching bank account number
+                        continue;
+                    }
+                } else {
+                    printError(305); //Invalid account number format
+                }
+            }
+        } else if (step == 2){
+            printf("Last 4-digit of ID Number: ");
+            if(!check_input(variable.last4Digit,sizeof(variable.last4Digit))){ //Prevent users to enter massive amount of input
+                printError(206); //Input exceeds 4 characters
+                continue;
+            }
+
+            if (strlen(variable.last4Digit) != 4){
+                printError(206); //Input exceeds 4 characters
+                continue;
+            }
+
+            if(strcmp(variable.last4Digit,backKeyWord) == 0){
+                step--;
+                continue;
+            } else {
+                if(check_last4Digits(variable.filename,variable.last4Digit)){
+                    last4Correct = true;
+                    step++;
+                    continue;
+                } else {
+                    printError(401); //Incorrect last 4 digit
+                    continue;
+                }
+            }
+        } else if (step == 3){
+            printf("Pin: ");
+            if(!check_input(variable.pin, sizeof(variable.pin))){ //Prevent users to enter massive amount of input
+                printError(206); //Input exceeds 4 characters
+                continue;
+            } 
+
+            if (strlen(variable.pin) != 4){
+                printError(206); //Input exceeds 4 characters
+                continue;
+            }
+
+            if (strcmp(variable.pin,backKeyWord) == 0){
+                step--;
+                continue;
+            } else {
+                if (check_pin(variable.filename,variable.pin)){
+                    pinCorrect = true;
+                    step++;
+                    break;
+                } else {
+                    printError(402); //Incorrect pin
+                    continue;
+                }
+            }
         } else {
-            printError(203); //Invalid account number format
-        }
-    }
-
-    while(true){
-        printf("Last 4-digit of ID Number: ");
-        if (!fgets(last4Digits, sizeof(last4Digits), stdin)) continue;
-        last4Digits[strcspn(last4Digits, "\n")] = '\0';
-
-        if(check_last4Digits(filename,last4Digits)){
-            last4Correct = true;
-            break;
-        } else {
-            printError(204); //Invalid last 4 digit
-            continue;
-        }
-    }
-
-    while(true){
-        printf("Pin: ");
-        if (!fgets(pin, sizeof(pin), stdin)) continue;
-        pin[strcspn(pin, "\n")] = '\0';
-
-        if (check_pin(filename,pin)){
-            pinCorrect = true;
-            break;
-        } else {
-            printError(205); //Incorrect pin
-            continue;
+            printf("System crashed. Restarting program...\n");
+            return; //Force exit void function
         }
     }
 
     if (last4Correct && pinCorrect){
-        if (remove(filename) == 0){
-            printf("----------ACCOUNT DEELETED----------\n\n");
-        } else if (remove(filename) != 0) {
+        if (remove(variable.filename) == 0){
+            printf("----------ACCOUNT DEELETED----------\n");
+        } else if (remove(variable.filename) != 0) {
             perror("Remove failed");
         }
     } else {
-        printError(206);
+        printError(103); //Unable to remove account. Leaving action..
+        return;
     }
 }
 
@@ -588,73 +695,140 @@ void updateAmount(char filename[], float newAmount){
 }
 
 void deposit(){
-    char filename[30];
-    char content[256];
-
-    char accNum[8];
-    char pin[6];
-    char inputAmount[20];
+    char inputAmount[256];
     float amountToDeposit = 0.00;
+
+    char depositAccept[256];
+    char loweredDepositAccept[256];
 
     char *endptr;
 
+    int step = 1;
+    bool acceptValid = true;
+
     struct variables variable;
 
-    printf("\n----------DEPOSIT MONEY-----------\n");
+    printHeader(14); //---------DEPOSIT MONEY------
 
     while(true){
-        printf("Bank Account Number: ");
-        fgets(accNum, sizeof(accNum), stdin);
-        accNum[strcspn(accNum, "\n")] = '\0';
+        if (step == 1){
+            printf("Bank Account Number: ");
+            if(!check_input(variable.accNum,sizeof(variable.accNum))){ //Prevent users to enter massive amount of input
+                printError(205); //Input exceeds 6 characters
+                continue;
+            }
 
-        sprintf(filename,"database/%s.txt",accNum);
+            if (strlen(variable.accNum) != 6){
+                printError(205); //Acc num must be 6 digit number
+                continue;
+            }
 
-        FILE *fp;
-        fp = fopen(filename, "r");
+            if (strcmp(variable.accNum,backKeyWord) == 0){
+                return;
+            } else {
+                if(!onlyDigits(variable.accNum)){
+                    printError(305);
+                    continue;
+                }
 
-        if (fp == NULL){
-            printError(301); //Account not found
-            continue;
-        } else {
+                sprintf(variable.filename,"database/%s.txt",variable.accNum);
+
+                FILE *fp;
+                fp = fopen(variable.filename, "r");
+
+                if (fp == NULL){
+                    printError(104); //Account not found
+                    continue;
+                } else {
+                    step++;
+                    continue;
+                }
+
+                fclose(fp);
+            }
+        } else if (step == 2){
             //Get pin from user
             printf("Pin: ");
-            fgets(pin, sizeof(pin), stdin);
-            pin[strcspn(pin, "\n")] = '\0'; 
+            if(!check_input(variable.pin, sizeof(variable.pin))){ //Prevent users to enter massive amount of input
+                printError(206); //Input exceeds 4 characters
+                continue;
+            } 
 
-            //Check if pin is valid
-            if(check_pin(filename,pin)){
-                printf("LOG IN SUCCESFUL\n");
-                getAmount(filename);
-                
-                fclose(fp);
-                while(true){
-                    printf("Current Amount: RM %.2f\n",global_amount);
-                    printf("Enter Amount To Deposit: RM ");
-                    fgets(inputAmount, sizeof(inputAmount), stdin);
-                    inputAmount[strcspn(inputAmount, "\n")] = '\0';
+            if (strlen(variable.pin) != 4){
+                printError(206); //Input exceeds 4 characters
+                continue;
+            }
+ 
 
-                    amountToDeposit = strtof(inputAmount,&endptr);
-
-                    if (check_amountFormat(inputAmount) && check_digitNumber(inputAmount)){
-                        if (amountToDeposit < 0 || amountToDeposit > 50000){
-                            printError(302); //Amount exceed allowed range
-                            continue;
-                        } else {
-                            global_amount += amountToDeposit;
-                            updateAmount(filename,global_amount);
-                            
-                            printf("----------DEPOSIT SUCCESSFUL----------\n");
-                            getAmount(filename);
-                            printf("Updated Amount: RM %.2f\n\n", global_amount);
-                            return;
-                        }
-                    } else {
-                        printError(304); //Invalid format.
-                        continue;
-                    }
-                }
+            if(strcmp(variable.pin,backKeyWord) == 0){
+                step--;
+                continue;
             } else {
-                printError(303); //Incorrect Pin
+                //Check if pin is valid
+                if(check_pin(variable.filename,variable.pin)){
+                    printf("-----------------------------------------------------\n");
+                    printf("CREDENTIAL VALID. PLEASE PROCEED\n\n");
+                    step++;
+                    getAmount(variable.filename);
+                    continue;
+                } else {
+                    printError(402); //Incorrect Pin
+                    continue;
+                }
+            }
+        } else if (step == 3){
+            printf("Current Amount: RM %.2f\n",global_amount);
+            printf("Enter Amount To Deposit: RM ");
+            fgets(inputAmount, sizeof(inputAmount), stdin);
+            inputAmount[strcspn(inputAmount, "\n")] = '\0';
+
+            if (strcmp(inputAmount,backKeyWord) == 0){
+                step--;
+                continue;
+            } else {
+                amountToDeposit = strtof(inputAmount,&endptr);
+
+                if (check_amountFormat(inputAmount) && check_digitNumber(inputAmount)){
+                    if (amountToDeposit < 0 || amountToDeposit > 50000){
+                        printError(502); //Amount exceed allowed range
+                        continue;
+                    } else {
+                        printf("Please confirm the transaction.\n");
+                        printf("Enter Accept[1] or Reject[0]: ");
+                        fgets(depositAccept, sizeof(depositAccept), stdin);
+                        depositAccept[strcspn(depositAccept, "\n")] = '\0';
+                        if(onlyDigits(depositAccept) || onlyAlphabets(depositAccept)){
+                            if (onlyAlphabets(depositAccept)){
+                                strcpy(loweredDepositAccept,depositAccept);
+                                toLowerCase(loweredDepositAccept);
+                            }
+
+                            if(strcmp(depositAccept,"0") == 0 || strcmp(loweredDepositAccept,"reject") == 0){
+                                printError(505); //Transaction rejected
+                                continue;
+                            } else if (strcmp(depositAccept,"1") == 0 || strcmp(loweredDepositAccept,"accept") == 0){
+                                global_amount += amountToDeposit;
+                                updateAmount(variable.filename,global_amount);
+                                
+                                printf("----------DEPOSIT SUCCESSFUL----------\n");
+                                getAmount(variable.filename);
+                                printf("Updated Amount: RM %.2f\n", global_amount);
+                                return;
+                            } else {
+                                acceptValid = false;
+                            }
+                        } else {
+                            acceptValid = false;
+                        }
+                    }
+                } else {
+                    printError(306); //Invalid amount format.
+                    continue;
+                }
+            }
+
+            if (!acceptValid){
+                printError(308); //Invalid accept format.
                 continue;
             }
         }
@@ -662,82 +836,143 @@ void deposit(){
 }
 
 void withdraw(){
-    char filename[30];
-    char content[256];
-    int lineNum = 0;
-    int targetLine = 6;
-
-    char accNum[8];
-    char pin[6];
-    char inputAmount[20];
+    char inputAmount[256];
     float amountToWithdraw = 0.00;
+
+    char withdrawAccept[256];
+    char loweredWithdrawAccept[256];
+
+    char *endptr;
+
+    int step = 1;
+    bool acceptValid = true;
 
     struct variables variable;
 
-    printf("\n----------WITHDRAW MONEY-----------\n");
+    printHeader(15); //---------WITHDRAW MONEY------
 
     while(true){
-        printf("Bank Account Number: ");
-        fgets(accNum, sizeof(accNum), stdin);
-        accNum[strcspn(accNum, "\n")] = '\0';
+        if (step == 1){
+            printf("Bank Account Number: ");
+            if(!check_input(variable.accNum,sizeof(variable.accNum))){ //Prevent users to enter massive amount of input
+                printError(205); //Input exceeds 6 characters
+                continue;
+            }
 
-        sprintf(filename,"database/%s.txt",accNum);
+            if (strlen(variable.accNum) != 6){
+                printError(205); //Acc num must be 6 digit number
+                continue;
+            }
 
-        FILE *fp;
-        fp = fopen(filename, "r");
+            if (strcmp(variable.accNum,backKeyWord) == 0){
+                return;
+            } else {
+                if(!onlyDigits(variable.accNum)){
+                    printError(305);
+                    continue;
+                }
 
-        if (fp == NULL){
-            printError(301); //Account not found
-            continue;
-        } else {
+                sprintf(variable.filename,"database/%s.txt",variable.accNum);
+
+                FILE *fp;
+                fp = fopen(variable.filename, "r");
+
+                if (fp == NULL){
+                    printError(104); //Account not found
+                    continue;
+                } else {
+                    step++;
+                    continue;
+                }
+
+                fclose(fp);
+            }
+        } else if (step == 2){
             //Get pin from user
             printf("Pin: ");
-            fgets(pin, sizeof(pin), stdin);
-            pin[strcspn(pin, "\n")] = '\0';
+            if(!check_input(variable.pin, sizeof(variable.pin))){ //Prevent users to enter massive amount of input
+                printError(206); //Input exceeds 4 characters
+                continue;
+            } 
 
-            //Check if pin is valid
-            if(check_pin(filename,pin)){
-                printf("LOG IN SUCCESFUL\n");
-                getAmount(filename);
-                
-                fclose(fp);
-                while(true){
-                    printf("Current Amount: RM %.2f\n",global_amount);
-                    printf("Enter Amount To Withdraw: RM ");
-                    fgets(inputAmount, sizeof(inputAmount), stdin);
-                    inputAmount[strcspn(inputAmount, "\n")] = '\0';
-                    printf("Amount to withdraw: RM %s\n",inputAmount);
-                    amountToWithdraw = strtof(inputAmount,NULL);
+            if (strlen(variable.pin) != 4){
+                printError(206); //Input exceeds 4 characters
+                continue;
+            }
+ 
 
-                    if (check_amountFormat(inputAmount) && check_digitNumber(inputAmount)){
-                        if(amountToWithdraw < 0){
-                            printError(302); //Amount exceed allowed range
-                            continue;
-                        } 
-                        
-                        if (amountToWithdraw > global_amount){
-                            printError(305); //Withdraw amount exceed available balance
-                            continue;
-                        }
-                        
-                        global_amount -= amountToWithdraw;
-                        updateAmount(filename,global_amount);
-
-                        printf("----------WITHDRAW SUCCESSFUL----------\n");
-                        getAmount(filename);
-                        printf("Updated Amount: RM %.2f\n\n", global_amount);
-                        return;
-                    } else {
-                        printError(304); //Invalid format.
-                        continue;
-                    }
-                }
+            if(strcmp(variable.pin,backKeyWord) == 0){
+                step--;
+                continue;
             } else {
-                printError(303); //Incorrect Pin
+                //Check if pin is valid
+                if(check_pin(variable.filename,variable.pin)){
+                    printf("-----------------------------------------------------\n");
+                    printf("CREDENTIAL VALID. PLEASE PROCEED\n\n");
+                    step++;
+                    getAmount(variable.filename);
+                    continue;
+                } else {
+                    printError(402); //Incorrect Pin
+                    continue;
+                }
+            }
+        } else if (step == 3){
+            printf("Current Amount: RM %.2f\n",global_amount);
+            printf("Enter Amount To Withdraw: RM ");
+            fgets(inputAmount, sizeof(inputAmount), stdin);
+            inputAmount[strcspn(inputAmount, "\n")] = '\0';
+
+            if (strcmp(inputAmount,backKeyWord) == 0){
+                step--;
+                continue;
+            } else {
+                amountToWithdraw = strtof(inputAmount,&endptr);
+
+                if (check_amountFormat(inputAmount) && check_digitNumber(inputAmount)){
+                    if (amountToWithdraw < 0){
+                        printError(507); //Amount must be positive
+                        continue;
+                    } else {
+                        printf("Please confirm the transaction.\n");
+                        printf("Enter Accept[1] or Reject[0]: ");
+                        fgets(withdrawAccept, sizeof(withdrawAccept), stdin);
+                        withdrawAccept[strcspn(withdrawAccept, "\n")] = '\0';
+                        if(onlyDigits(withdrawAccept) || onlyAlphabets(withdrawAccept)){
+                            if (onlyAlphabets(withdrawAccept)){
+                                strcpy(loweredWithdrawAccept,withdrawAccept);
+                                toLowerCase(loweredWithdrawAccept);
+                            }
+
+                            if(strcmp(withdrawAccept,"0") == 0 || strcmp(loweredWithdrawAccept,"reject") == 0){
+                                printError(505); //Transaction rejected
+                                continue;
+                            } else if (strcmp(withdrawAccept,"1") == 0 || strcmp(loweredWithdrawAccept,"accept") == 0){
+                                global_amount -= amountToWithdraw;
+                                updateAmount(variable.filename,global_amount);
+                                
+                                printf("----------DEPOSIT SUCCESSFUL----------\n");
+                                getAmount(variable.filename);
+                                printf("Updated Amount: RM %.2f\n", global_amount);
+                                return;
+                            } else {
+                                acceptValid = false;
+                            }
+                        } else {
+                            acceptValid = false;
+                        }
+                    }
+                } else {
+                    printError(306); //Invalid amount format.
+                    continue;
+                }
+            }
+
+            if (!acceptValid){
+                printError(308); //Invalid accept format.
                 continue;
             }
         }
-        fclose(fp);
     }
 }
 
@@ -790,8 +1025,6 @@ int check_accType(char send_filename[], char rec_filename[]){
         return 1;
     } else if(strcmp(send_content,strCurrent) == 0 && strcmp(rec_content,strSavings) == 0){
         return 2;
-    } else if (strcmp(send_content,rec_content) == 0){
-        return 3;
     } else {
         return 0;
     }
@@ -800,13 +1033,13 @@ int check_accType(char send_filename[], char rec_filename[]){
 void remittance(){
     struct variables variable;
 
-    char sender_accNum[8];
-    char sender_pin[6];
+    char sender_accNum[256];
+    char sender_pin[256];
     char sender_filename[20];
-    char receiver_accNum[8];
+    char receiver_accNum[256];
     char receiver_filename[20];
 
-    char inputAmount[20];
+    char inputAmount[256];
     float amountToRemit = 0.00;
     char *endptr;
 
@@ -815,9 +1048,12 @@ void remittance(){
     float curToSav = 0.03;
     float remitFee;
 
-    char remitAccept[10];
+    char remitAccept[256];
 
-    printf("\n----------REMITTANCE-----------\n");
+    bool rejected = false;
+    bool invalid = false;
+
+    printHeader(16); //---------REMITTANCE------
     printf("REMITTANCE FEE:\n");
     printf("Savings to Current: 2%%\n");
     printf("Current to Savings: 3%%\n\n");
@@ -833,7 +1069,7 @@ void remittance(){
         if (check_accNum(sender_filename)){
             break;
         } else {
-            printError(401); //Account not found
+            printError(104); //Account not found
             continue;
         }
     }
@@ -843,6 +1079,11 @@ void remittance(){
         printf("Pin: ");
         fgets(sender_pin, sizeof(sender_pin), stdin);
         sender_pin[strcspn(sender_pin, "\n")] = '\0';
+
+        if (!onlyDigits(sender_pin)){
+            printError(304); //Invalid PIN format
+            continue;
+        }
 
         if(check_pin(sender_filename,sender_pin)){
             break;
@@ -861,28 +1102,35 @@ void remittance(){
         sprintf(receiver_filename,"database/%s.txt",receiver_accNum);
 
         if(check_accNum(receiver_filename)){
-            break;
+            if(strcmp(receiver_accNum, sender_accNum) == 0){ //Check if sender_accNum = receiver_accNum
+                printError(506); //Sender bank account != Receiver bank account
+                continue;
+            } else {
+                break;
+            }
         } else {
-            printError(401); //Account not found
+            printError(104); //Account not found
             continue;
         }
     }
 
-    printf("CREDENTIAL VALID. PLEASE PROCEED\n");
+    printf("-----------------------------------------------------\n");
+    printf("CREDENTIAL VALID. PLEASE PROCEED\n\n");
 
     //Store sender and receiver current amount
     getAmount(receiver_filename);
     float receiver_amount = global_amount;
     getAmount(sender_filename);
     float sender_amount = global_amount;
-    printf("Current Amount(RM): %.2f\n", sender_amount);
+    printf("Current Amount: RM %.2f\n", sender_amount);
 
     //Check if amount to be transferred is valid
     while(true){
-        printf("Amount to be transferred(RM): ");
+        printf("Amount to be transferred: RM ");
         fgets(inputAmount, sizeof(inputAmount),stdin);
         inputAmount[strcspn(inputAmount, "\n")] = '\0';
 
+        //Change string to float
         amountToRemit = strtof(inputAmount, &endptr);
 
         if(check_amountFormat(inputAmount) && check_digitNumber(inputAmount)){
@@ -890,22 +1138,21 @@ void remittance(){
             remitStatus = check_accType(sender_filename,receiver_filename);
             getAmount(sender_filename);
             if (global_amount < amountToRemit){
-                printError(403);
+                printError(504); //Remittance amount exceeds your current amount
                 continue;
             }
             if(remitStatus == 1){ //Savings to Current
                 remitFee = amountToRemit * savToCur;
-                printf("Remittance Fee(RM): %.2f\n", remitFee);
+                printf("Remittance Fee: RM %.2f\n", remitFee);
                 amountToRemit -= remitFee;
-                printf("Transferring Amount(RM): %.2f\n\n", amountToRemit);
+                printf("Transferring Amount: RM %.2f\n\n", amountToRemit);
                 printf("Please confirm the transaction.\n");
-                printf("Enter 1 to accept or 0 to reject: ");
+                printf("Enter Accept[1] or Reject[0]: ");
                 fgets(remitAccept, sizeof(remitAccept), stdin);
                 remitAccept[strcspn(remitAccept, "\n")] = '\0';
                 if (onlyDigits(remitAccept)){ //If user input 0 or 1
                     if(strcmp(remitAccept, "0") == 0){
-                        printError(406); //Transaction rejected.
-                        continue;
+                        rejected = true; //Transaction rejected
                     } else if (strcmp(remitAccept,"1") == 0){
                         sender_amount -= amountToRemit;
                         receiver_amount += amountToRemit;
@@ -916,14 +1163,12 @@ void remittance(){
                         printf("----------REMIT SUCCESSFUL----------\n\n");
                         break;
                     } else {
-                        printError(405); //Invalid accept/reject input
-                        continue;
+                        rejected = false; //Invalid accept format
                     }
-                } else if (onlyAplhabets(remitAccept)){
+                } else if (onlyAlphabets(remitAccept)){
                     toLowerCase(remitAccept);
                     if (strcmp(remitAccept,"reject") == 0) {
-                        printError(406); //Transaction rejected.
-                        continue;
+                        rejected = true; //Transaction rejected
                     } else if (strcmp(remitAccept,"accept") == 0){
                         sender_amount -= amountToRemit;
                         receiver_amount += amountToRemit;
@@ -934,11 +1179,10 @@ void remittance(){
                         printf("----------REMIT SUCCESSFUL----------\n\n");
                         break;
                     } else {
-                        printError(405); //Invalid accept/reject input
-                        continue;
+                        invalid = false; //Invalid accept format
                     }
                 } else {
-                    printError(405); //Invalid accept/reject input 
+                    invalid = false; //Invalid accept format
                 }
             } else if (remitStatus == 2){ //Current to Savings
                 remitFee = amountToRemit * curToSav;
@@ -948,11 +1192,9 @@ void remittance(){
                 printf("Enter 0 to Reject, 1 to Accept: ");
                 fgets(remitAccept, sizeof(remitAccept), stdin);
                 remitAccept[strcspn(remitAccept, "\n")] = '\0';
-                printf("%s\n", remitAccept);
                 if (onlyDigits(remitAccept)){ //If user input 0 or 1
                     if(strcmp(remitAccept, "0") == 0){
-                        printError(406); //Transaction rejected.
-                        continue;
+                        rejected = true; //Transaction rejected
                     } else if (strcmp(remitAccept,"1") == 0){
                         sender_amount -= amountToRemit;
                         receiver_amount += amountToRemit;
@@ -963,16 +1205,15 @@ void remittance(){
                         printf("----------REMIT SUCCESSFUL----------\n\n");
                         break;
                     } else {
-                        printError(405); //Invalid accept/reject input
-                        continue;
+                        invalid = true;
                     }
-                } else if (onlyAplhabets(remitAccept)){
+                } else if (onlyAlphabets(remitAccept)){
                     toLowerCase(remitAccept);
                     if (strcmp(remitAccept,"reject") == 0) {
                         printError(406); //Transaction rejected.
                         continue;
                     } else if (strcmp(remitAccept,"accept") == 0){
-                        sender_amount -= amountToRemit;
+                        sender_amount -= amountToRemit; 
                         receiver_amount += amountToRemit;
                         
                         updateAmount(sender_filename,sender_amount);
@@ -981,20 +1222,27 @@ void remittance(){
                         printf("----------REMIT SUCCESSFUL----------\n\n");
                         break;
                     } else {
-                        printError(405); //Invalid accept/reject input
-                        continue;
+                        invalid = true;
                     }
                 } else {
-                    printError(405); //Invalid accept/reject input 
+                    invalid = true; 
                 }
-            } else if (remitStatus == 3){
-                break;
             } else if (remitStatus == 0){
-                printf("ERROR\n");
-                continue;
+                printf("System crashed. Restarting the program...\n");
+                return; //Force exit void function
             }
         } else {
-            printf("INVALID FORMAT. ONLY XX.XX IS ACCEPTED\n");
+            printError(306); //Invalid amount format
+            continue;
+        }
+
+        if (rejected){
+            printError(505); //Transaction rejected
+            continue;
+        } 
+
+        if (invalid){
+            printError(308); //Invalid accept format
             continue;
         }
     }    
@@ -1014,7 +1262,7 @@ int main(){
     while (true){
         int count = 1;
         start_menu();
-        printf("Please type the number of actions(1-6) to proceed: ");
+        printf("Please type the number of actions (1-6) to proceed: ");
 
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = '\0';
