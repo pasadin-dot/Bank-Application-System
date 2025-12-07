@@ -1,0 +1,6 @@
+Timestamp                 | Action                       | SenderAcc    | ReceiverAcc  | Amount(RM)   | OldBal(RM)   | NewBal(RM)  
+------------------------------------------------------------------------------------------------------------------------------------
+Mon Dec 08 02:35:32 2025  | Create New Bank Account      | 892149       | NULL         | NULL         | 0.00         | 0.00        
+Mon Dec 08 02:36:15 2025  | Create New Bank Account      | 417866       | NULL         | NULL         | 0.00         | 0.00        
+Mon Dec 08 02:38:35 2025  | Deposit Money                | 417866       | NULL         | 1349.78      | 0.00         | 1349.78     
+Mon Dec 08 02:38:51 2025  | Deposit Money                | 892149       | NULL         | 12.34        | 0.00         | 12.34       
